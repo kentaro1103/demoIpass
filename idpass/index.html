@@ -7,63 +7,151 @@
     <meta name="author" content="">
     <!-- <link rel="icon" href="../../../../favicon.ico"> -->
 
-    <title>Starter Template for Bootstrap</title>
+    <title>iPassクリエイター</title>
 
     <!-- Bootstrap core CSS -->
     <link href="./bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="./css/index.css" rel="stylesheet">
+
+    <!-- datatables -->
+    <link rel="stylesheet" type="text/css" href="./DataTables/datatables.min.css"/>
   </head>
 
   <body>
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-            <div class="dropdown-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-      </div>
+      <a class="navbar-brand" href="#">iPass クリエイター</a>
     </nav>
 
-    <main role="main" class="container">
+    <main role="main" class="container-fluid">
 
-      <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
+      <form id="from" autocomplete="off">
+        <div class="form-group row mb-5 ml-0">
+          <div class="col-sm-4">
+            <input type="text" id="in_id" class="form-control" placeholder="ここにIDを入力してください。" required autofocus>
+          </div>
+          <div class="col-sm-2">
+            <input type="submit" id="in_submit" class="btn btn-info" value="iPassを作成">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-8">
+            <h4>登録済みのIDとパスワード</h4>
+            <table id="table" class="table table-hover table-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th class="border-top-0 border-bottom-0">登録済みID</th>
+                  <th class="border-0" scope="col">パスワード</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </form>
 
-    </main><!-- /.container -->
+    </main>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <script src="./js/vendor/jquery-slim.min.js"></script>
     <script src="./js/vendor/popper.min.js"></script>
     <script src="./bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+    <!-- datatables -->
+    <script type="text/javascript" src="./DataTables/datatables.min.js"></script>
+
+<script type="text/javascript">
+$(function() {
+  // テーブルデータ
+  var data = [];
+
+  // テーブル表示
+  function reload() {
+    if($('#table').hasClass('dataTable')) {
+      $('#table').DataTable().destroy();
+    }
+    $('#table').DataTable({
+      // 件数切替機能 無効
+      lengthChange: false,
+      // 検索機能 無効
+      searching: false,
+      // ソート機能 無効
+      ordering: false,
+      // 情報表示 無効
+      info: false,
+      // ページング機能 無効
+      paging: false,
+      // 縦スクロールバーを有効
+      scrollY: 300,
+      // メッセージ変更
+      language: {
+        "emptyTable": "IDとパスワードが存在しません。"
+      },
+      // データ
+      data: data,
+      columns: [
+        {data: "id"},
+        {data: "pass"},
+      ]
+    });
+  }
+
+  // テーブル初期表示
+  reload();
+
+  // iPass作成アクション
+  $('#from').submit(function() {
+    // alert('クリックされました=' + $('#in_id').val());
+    var in_id = $('#in_id').val();
+    // チェック
+    // iPass自動生成
+    data.unshift({'id': escapeHtml(in_id), 'pass': escapeHtml(getPass())});
+    console.log(JSON.stringify(data, null, '\t'));
+    // テーブル表示
+    reload();
+    $('#in_id').val('');
+
+    return false;
+  });
+
+  /****************************************************************************
+   *
+  ****************************************************************************/
+
+  // 乱数生成
+  var ransu = function(n){
+    var str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    + '!"#$%&()-=@+*/?<>,.';
+    str = str.split('');
+    var s = '';
+    for (var i = 0; i < n; i++) {
+      s += str[Math.floor(Math.random() * str.length)];
+    }
+    return s;
+  };
+
+  // pass生成
+  function getPass() {
+    var code = '';
+    var i = 0;
+    while ( code = ransu(8) ) {
+      if(code.match(/^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}$/i)) {
+        // if(code.trim().length == 8) {
+          console.log(code)
+          break;
+        // }
+      }
+    }
+    return code;
+  }
+
+  // HTMLエスケープ
+  function escapeHtml(str) {
+    return $('<span/>').text(str).html();
+  }
+
+} );
+</script>
   </body>
 </html>
