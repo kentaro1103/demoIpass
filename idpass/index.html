@@ -91,11 +91,21 @@
       // iPass作成アクション
       $('#from').submit(function () {
         // alert('クリックされました=' + $('#in_id').val());
-        var in_id = $('#in_id').val();
+        var in_id = $.trim($('#in_id').val());
         // チェック
+        if (isBlank(in_id)) {
+          alert('IDを入力してください。');
+          return false;
+        }
+        if (exists(in_id)) {
+          alert('ID「' + in_id + '」は既に登録済みです。');
+          return false;
+        }
+
         // iPass自動生成
         data.unshift({ 'id': escapeHtml(in_id), 'pass': escapeHtml(getPass()) });
         console.log(JSON.stringify(data, null, '\t'));
+        
         // テーブル表示
         reload();
         $('#in_id').val('');
@@ -103,9 +113,21 @@
         return false;
       });
 
+      // ID存在チェック
+      function exists(_id) {
+        return data.some(function (e) {
+          return (e.id === _id);
+        });
+      }
+
       /****************************************************************************
        * common
       ****************************************************************************/
+
+      // 必須チェック
+      function isBlank(str) {
+        return ($.trim(str).length == 0);
+      }
 
       // 乱数生成
       var ransu = function (n) {
