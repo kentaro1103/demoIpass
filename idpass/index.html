@@ -69,21 +69,21 @@
           $('#table').DataTable().destroy();
         }
         $('#table').DataTable({
-          columnDefs: [
-            { width: "50%", targets: 0 }
-          ],
           lengthChange: false,  // 件数切替機能 無効
           searching: false,     // 検索機能 無効
           ordering: false,      // ソート機能 無効
           info: false,          // 情報表示 無効
           paging: false,        // ページング機能 無効
           scrollY: 300,         // 縦スクロールバーを有効
+          columnDefs: [
+            { width: "50%", targets: 0 }
+          ],
           language: {
             "emptyTable": "登録済みのIDとパスワードが表示されます。"  // メッセージ変更
           },
           data: data,           // データ
           columns: [
-            { data: "id" },
+            { data: "d_id" },
             { data: "pass" },
           ]
         });
@@ -109,7 +109,7 @@
         }
 
         // iPass自動生成
-        data.unshift({ 'id': escapeHtml(in_id), 'pass': escapeHtml(getPass()) });
+        data.unshift({ 'id': in_id, 'd_id': escapeHtml(in_id), 'pass': escapeHtml(getPass()) });
         console.log(JSON.stringify(data, null, '\t'));
 
         // テーブル表示
@@ -122,7 +122,7 @@
       // ID存在チェック
       function exists(_id) {
         return data.some(function (e) {
-          return (e.id === escapeHtml(_id));
+          return (e.id === _id);
         });
       }
 
