@@ -9,10 +9,10 @@
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom styles for this template -->
-  <link href="css/index.css" rel="stylesheet">
   <!-- datatables -->
   <link href="vendor/DataTables/datatables.min.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="css/index.css" rel="stylesheet">
 </head>
 
 <body>
@@ -53,7 +53,6 @@
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <script src="vendor/jquery-slim.min.js"></script>
-  <script src="vendor/popper.min.js"></script>
   <script src="vendor/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
   <!-- datatables -->
   <script src="vendor/DataTables/datatables.min.js"></script>
@@ -110,7 +109,7 @@
 
         // iPass自動生成
         data.unshift({ 'id': in_id, 'd_id': escapeHtml(in_id), 'pass': escapeHtml(getPass()) });
-        console.log(JSON.stringify(data, null, '\t'));
+        // console.log(JSON.stringify(data, null, '\t'));
 
         // テーブル表示
         reload();
@@ -153,7 +152,7 @@
         var i = 0;
         while (code = ransu(8)) {
           if (code.match(/^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}$/i)) {
-            console.log(code)
+            // console.log(code)
             break;
           }
         }
