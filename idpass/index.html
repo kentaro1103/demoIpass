@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="jp">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>iPassクリエイター</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- datatables -->
+  <link href="vendor/DataTables/datatables.min.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="css/index.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">iPass クリエイター</a>
+  </nav>
+
+  <main role="main" class="container-fluid">
+
+    <form id="from" autocomplete="off">
+      <div class="form-group row mb-5 ml-0">
+        <div class="col-sm-4">
+          <input type="text" id="in_id" class="form-control" placeholder="ここにIDを入力してください。" autofocus>
+          <div id="errIn_id" class="alert alert-danger mt-2 px-2 py-1 d-none" role="alert">アラート</div>
+        </div>
+        <div class="col-sm-8">
+          <input type="submit" id="in_submit" class="btn btn-info" value="iPassを作成">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-7">
+          <h4>登録済みのIDとパスワード</h4>
+          <table id="table" class="table table-hover table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th>登録済みID</th>
+                <th>パスワード</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </form>
+
+  </main>
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <script src="vendor/jquery-slim.min.js"></script>
+  <script src="vendor/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+  <!-- datatables -->
+  <script src="vendor/DataTables/datatables.min.js"></script>
+
+  <script type="text/javascript">
+    $(function () {
+      // テーブルデータ
+      var data = [];
+
+      // テーブル表示
+      function reload() {
+        if ($('#table').hasClass('dataTable')) {
+          $('#table').DataTable().destroy();
+        }
+        $('#table').DataTable({
+          lengthChange: false,  // 件数切替機能 無効
+          searching: false,     // 検索機能 無効
+          ordering: false,      // ソート機能 無効
+          info: false,          // 情報表示 無効
+          paging: false,        // ページング機能 無効
+          scrollY: 300,         // 縦スクロールバーを有効
+          columnDefs: [
+            { width: "50%", targets: 0 }
+          ],
+          language: {
+            "emptyTable": "登録済みのIDとパスワードが表示されます。"  // メッセージ変更
+          },
+          data: data,           // データ
+          columns: [
+            { data: "d_id" },
+            { data: "pass" },
+          ]
+        });
+      }
+
+      // テーブル初期表示
+      reload();
+
+      // iPass作成アクション
+      $('#from').submit(function () {
+        $('.alert').addClass('d-none');
+        var in_id = $.trim($('#in_id').val());
+        // チェック
+        if (isBlank(in_id)) {
+          $('#errIn_id').html('IDを入力してください。');
+          $('#errIn_id').removeClass('d-none');
+          return false;
+        }
+        if (exists(in_id)) {
+          $('#errIn_id').html('ID「' + in_id + '」は既に登録済みです。');
+          $('#errIn_id').removeClass('d-none');
+          return false;
+        }
+
+        // iPass自動生成
+        data.unshift({ 'id': in_id, 'd_id': escapeHtml(in_id), 'pass': escapeHtml(getPass()) });
+        // console.log(JSON.stringify(data, null, '\t'));
+
+        // テーブル表示
+        reload();
+        $('#in_id').val('');
+
+        return false;
+      });
+
+      // ID存在チェック
+      function exists(_id) {
+        return data.some(function (e) {
+          return (e.id === _id);
+        });
+      }
+
+      /****************************************************************************
+       * common
+      ****************************************************************************/
+
+      // 必須チェック
+      function isBlank(str) {
+        return ($.trim(str).length == 0);
+      }
+
+      // 乱数生成
+      function ransu(n) {
+        var str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+          + '!"#$%&()-=@+*/?<>,.';
+        str = str.split('');
+        var s = '';
+        for (var i = 0; i < n; i++) {
+          s += str[Math.floor(Math.random() * str.length)];
+        }
+        return s;
+      };
+
+      // pass生成
+      function getPass() {
+        var code = '';
+        var i = 0;
+        while (code = ransu(8)) {
+          if (code.match(/^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}$/i)) {
+            // console.log(code)
+            break;
+          }
+        }
+        return code;
+      }
+
+      // HTMLエスケープ
+      function escapeHtml(str) {
+        return $('<span/>').text(str).html();
+      }
+
+    });
+  </script>
+</body>
+
+</html>
