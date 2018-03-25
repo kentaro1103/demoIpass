@@ -121,7 +121,7 @@
       // ID存在チェック
       function exists(_id) {
         return data.some(function (e) {
-          return (e._id === _id);
+          return (e._id == _id);
         });
       }
 
