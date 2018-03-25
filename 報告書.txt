@@ -1,0 +1,18 @@
+開発環境
+　ＯＳ：MacOS 10.13.3
+　エディタ：Visual Studio Code
+　ブラウザ：Chrome
+
+
+構成
+idpass          :ルート
+ css            :CSSフォルダ
+  index.css     :index用CSS
+ vendor         :フレームワーク、ライブラリ格納
+ index.html     :iPassクリエイター画面
+
+
+ポイント
+　デザインフレームワークにBootstrap4、IDとパスワードのテーブル表示にDataTablesを使用しています。
+　エラー表示を入力項目近くにアラート表示する形で実装しました。
+　連想配列内に保存するIDは、表示用IDとユニーク比較用のIDの二つを保持しています。
