@@ -82,7 +82,7 @@
           },
           data: data,           // データ
           columns: [
-            { data: "d_id" },
+            { data: "id" },
             { data: "pass" },
           ]
         });
@@ -108,7 +108,7 @@
         }
 
         // iPass自動生成
-        data.unshift({ 'id': in_id, 'd_id': escapeHtml(in_id), 'pass': escapeHtml(getPass()) });
+        data.unshift({ '_id': in_id, 'id': escapeHtml(in_id), 'pass': escapeHtml(getPass()) });
         // console.log(JSON.stringify(data, null, '\t'));
 
         // テーブル表示
@@ -121,7 +121,7 @@
       // ID存在チェック
       function exists(_id) {
         return data.some(function (e) {
-          return (e.id === _id);
+          return (e._id === _id);
         });
       }
 
