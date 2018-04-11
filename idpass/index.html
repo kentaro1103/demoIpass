@@ -102,7 +102,7 @@
           return false;
         }
         if (exists(in_id)) {
-          $('#errIn_id').html('ID「' + in_id + '」は既に登録済みです。');
+          $('#errIn_id').html('IDは既に登録済みです。');
           $('#errIn_id').removeClass('d-none');
           return false;
         }
@@ -136,8 +136,7 @@
 
       // 乱数生成
       function ransu(n) {
-        var str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-          + '!"#$%&()-=@+*/?<>,.';
+        var str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!"#$%&()-=@+*/?<>,.';
         str = str.split('');
         var s = '';
         for (var i = 0; i < n; i++) {
@@ -149,9 +148,8 @@
       // pass生成
       function getPass() {
         var code = '';
-        var i = 0;
         while (code = ransu(8)) {
-          if (code.match(/^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}$/i)) {
+          if (code.match(/^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)(?=.*?[!"#\$%&\(\)\-=@\+\*/\?<>,\.])[!-~]{8}$/)) {
             // console.log(code)
             break;
           }
